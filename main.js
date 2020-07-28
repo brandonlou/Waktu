@@ -1,9 +1,17 @@
-const { app, Menu, Tray, Notification, BrowserWindow, ipcMain } = require("electron");
+const { app, ipcMain, dialog, shell, Menu, Tray, Notification, BrowserWindow } = require("electron");
 const path = require("path");
 const fs = require("fs");
-const DEFAULT_INTERVAL = 60000;
+const DEFAULT_INTERVAL = 60; // 1 hour.
+
+// In minutes. One more minute will result in an integer overflow when converted to milliseconds.
+const MAX_INTERVAL = 35791;
 
 let preferencesWindow, aboutWindow = null;
+
+// Converts minutes to milliseconds.
+const minToMs = (minutes) => {
+    return minutes * 60000;
+}
 
 const openPreferencesPage = () => {
     // Prevent more than one instance of a preference window.
@@ -14,7 +22,7 @@ const openPreferencesPage = () => {
         height: 400,
         width: 300,
         webPreferences: {
-            nodeIntegration: true
+            nodeIntegration: true // This allows ipcRenderer to work
         }
     });
     preferencesWindow.loadFile("./preferences.html");
@@ -25,22 +33,46 @@ const openPreferencesPage = () => {
 }
 
 const openAboutPage = () => {
-    aboutWindow = new BrowserWindow({
-        height: 400,
-        width: 300
+
+    // About dialog options.
+    const options = {
+        type: "info",
+        buttons: ["Close", "Source", "Donate"],
+        title: "Waktu",
+        defaultId: 0, // "Close" is highlighted by default.
+        message: "Waktu v. 1.0.0",
+        detail: "Extra detail",
+        icon: "./icon.png",
+        cancelId: 0
+    };
+
+    // Display the about dialog.
+    dialog.showMessageBox(options).then((data) => {
+        // Handle button clicked.
+        switch(data.response) {
+            case 0: // Cancel
+                break;
+            case 1: // Source
+                shell.openExternal("https://github.com/brandonlou/Waktu");
+                break;
+            case 2: // Donate
+                // shell.openExternal("");
+                break;
+            default:
+                break;
+        }
     });
-    aboutWindow.loadFile("./about.html");
-    aboutWindow.setResizable(false);
-    aboutWindow.on("closed", () => {
-        aboutWindow = null;
-    });
+
 }
 
+// Opens a donation page (which I do not have yet)
 const openDonateLink = () => {
-
+    return;
 }
 
+// Keep tray global to prevent it from dissapearing.
 let tray = null;
+
 const createSystemTray = () => {
     tray = new Tray("./icon.png");
     const contextMenu = Menu.buildFromTemplate([
@@ -92,7 +124,6 @@ const onBreakTime = () => {
         subtitle: "right now",
         body: "this is the body",
         silent: false,
-        icon: "./icon.png",
         hasReply: false,
         timeoutType: "never", // Notification will persist on the screen.
         urgency: "critical",
@@ -110,10 +141,18 @@ try {
     storedConfig = JSON.parse(fs.readFileSync(filePath));
 } catch {
     storedConfig = {
-        interval: DEFAULT_INTERVAL
+        interval: minToMs(DEFAULT_INTERVAL)
     };
 }
-const interval = storedConfig.interval | DEFAULT_INTERVAL;
+let interval = minToMs(DEFAULT_INTERVAL);
+if(storedConfig.interval) {
+    if(storedConfig.interval > MAX_INTERVAL) {
+        interval = minToMs(DEFAULT_INTERVAL);
+    } else {
+        interval = minToMs(storedConfig.interval);
+    }
+}
+console.log("Current interval: " + interval + " ms");
 let timer = setInterval(onBreakTime, interval);
 
 // Prevents the default behavior of quitting the application when all windows are closed.
@@ -123,19 +162,25 @@ app.on("window-all-closed", (e) => {
 
 // Handles new interval settings.
 ipcMain.on("interval-message", (event, arg) => {
-    const newInterval = parseInt(arg); // Converts the first argument into an integer.
+    const newIntervalMin = parseInt(arg); // Converts the first argument into an integer.
+    let newIntervalMs = minToMs(DEFAULT_INTERVAL);
+    if(newIntervalMin > MAX_INTERVAL) {
+        newIntervalMs = minToMs(DEFAULT_INTERVAL);
+    } else {
+        newIntervalMs = minToMs(newIntervalMin);
+    }
 
     // Reset current timer to use new interval.
     clearInterval(timer);
-    timer = setInterval(onBreakTime, newInterval);
-    console.log("New interval: " + newInterval);
+    timer = setInterval(onBreakTime, newIntervalMs);
+    console.log("New interval: " + newIntervalMs);
 
     // Gets OS-specific application path.
     const userDataPath = app.getPath("userData");
     const filePath = path.join(userDataPath, "config.json");
 
     const newConfig = {
-        interval: newInterval
+        interval: newIntervalMin
     }
 
     // Write to config file asynchronously. 
@@ -145,3 +190,7 @@ ipcMain.on("interval-message", (event, arg) => {
         }
     });
 });
+
+// Hide application the from Mac dock so it's only accessible via the system tray.
+// Minor issue: There is a slight blip before the application icon dissapears.
+app.dock.hide();
