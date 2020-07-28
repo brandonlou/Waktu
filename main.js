@@ -2,9 +2,10 @@ const { app, ipcMain, dialog, shell, Menu, Tray, Notification, BrowserWindow } =
 const path = require("path");
 const fs = require("fs");
 const DEFAULT_INTERVAL = 60; // 1 hour.
-
 // In minutes. One more minute will result in an integer overflow when converted to milliseconds.
 const MAX_INTERVAL = 35791;
+
+let enabled = true;
 
 let preferencesWindow, aboutWindow = null;
 
@@ -22,7 +23,9 @@ const openPreferencesPage = () => {
         height: 400,
         width: 300,
         webPreferences: {
-            nodeIntegration: true // This allows ipcRenderer to work
+            nodeIntegration: true, // This allows ipcRenderer to work.
+            enableRemoteModule: true, // Hides deprecation warning.
+            devTools: false
         }
     });
     preferencesWindow.loadFile("./preferences.html");
@@ -40,7 +43,7 @@ const openAboutPage = () => {
         buttons: ["Close", "Source", "Donate"],
         title: "Waktu",
         defaultId: 0, // "Close" is highlighted by default.
-        message: "Waktu v. 1.0.0",
+        message: "Waktu v. " + app.getVersion(), // Gets version from package.json
         detail: "Extra detail",
         icon: "./icon.png",
         cancelId: 0
@@ -56,7 +59,7 @@ const openAboutPage = () => {
                 shell.openExternal("https://github.com/brandonlou/Waktu");
                 break;
             case 2: // Donate
-                // shell.openExternal("");
+                openDonateLink();
                 break;
             default:
                 break;
@@ -70,6 +73,11 @@ const openDonateLink = () => {
     return;
 }
 
+const handleClickEnable = () => {
+    enabled = !enabled;
+    console.log("Enabled: " + enabled);
+}
+
 // Keep tray global to prevent it from dissapearing.
 let tray = null;
 
@@ -77,30 +85,52 @@ const createSystemTray = () => {
     tray = new Tray("./icon.png");
     const contextMenu = Menu.buildFromTemplate([
         {
+            type: "normal",
             label: "Next break in: xxx",
+            toolTip: "Functionality will be added in a future version.",
             enabled: false
         },
         {
-            label: "Enabled (click to disable)",
-            type: "radio"
+            type: "checkbox",
+            label: "Enable (click to toggle)",
+            toolTip: "Check/uncheck to enable or disable break reminders.",
+            checked: true,
+            click: handleClickEnable
         },
         {
             type: "separator"
         },
         {
+            type: "normal",
             label: "Preferences",
+            toolTip: "Opens the preferences pane.",
             click: openPreferencesPage
         },
         {
             type: "separator"
         },
         {
+            type: "normal",
             label: "Donate",
+            toolTip: "Opens an external link to donate. Thank you :)",
             click: openDonateLink
         },
         {
+            type: "normal",
             label: "About",
+            toolTip: "Opens the about pane.",
             click: openAboutPage
+        },
+        {
+            type: "separator"
+        },
+        {
+            type: "normal",
+            label: "Quit Waktu",
+            toolTip: "Quits the application.",
+            click: () => {
+                app.quit();
+            }
         }
     ]);
     tray.setToolTip("Remember to take a break!"); // Hover text for tray icon.
@@ -111,6 +141,12 @@ app.whenReady().then(createSystemTray);
 
 // Calls whenever a break time is due.
 const onBreakTime = () => {
+
+    if(!enabled) {
+        console.log("Skipping break");
+        return;
+    }
+
     console.log("Breaktime!");
 
     if(!Notification.isSupported()) {
