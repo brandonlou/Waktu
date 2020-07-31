@@ -1,18 +1,10 @@
 const { app, ipcMain, dialog, shell, Menu, Tray, Notification, BrowserWindow } = require("electron");
 const path = require("path");
 const fs = require("fs");
+const Timer = require("./Timer.js").Timer;
 const DEFAULT_INTERVAL = 60; // 1 hour.
-// In minutes. One more minute will result in an integer overflow when converted to milliseconds.
-const MAX_INTERVAL = 35791;
-
-let enabled = true;
 
 let preferencesWindow, aboutWindow = null;
-
-// Converts minutes to milliseconds.
-const minToMs = (minutes) => {
-    return minutes * 60000;
-}
 
 const openPreferencesPage = () => {
     // Prevent more than one instance of a preference window.
@@ -74,8 +66,7 @@ const openDonateLink = () => {
 }
 
 const handleClickEnable = () => {
-    enabled = !enabled;
-    console.log("Enabled: " + enabled);
+    timer.toggleEnable();
 }
 
 // Keep tray global to prevent it from dissapearing.
@@ -139,35 +130,6 @@ const createSystemTray = () => {
 
 app.whenReady().then(createSystemTray);
 
-// Calls whenever a break time is due.
-const onBreakTime = () => {
-
-    if(!enabled) {
-        console.log("Skipping break");
-        return;
-    }
-
-    console.log("Breaktime!");
-
-    if(!Notification.isSupported()) {
-        console.log("Notifications are not supported");
-        return;
-    }
-
-    // Create and show a notification to take a break.
-    const notification = new Notification({
-        title: "Please take a break!",
-        subtitle: "right now",
-        body: "this is the body",
-        silent: false,
-        hasReply: false,
-        timeoutType: "never", // Notification will persist on the screen.
-        urgency: "critical",
-        closeButtonText: "Ignore"
-    });
-    notification.show();
-}
-
 // Setup initial repeating timer.
 // TODO: Modularize
 const userDataPath = app.getPath("userData");
@@ -177,19 +139,10 @@ try {
     storedConfig = JSON.parse(fs.readFileSync(filePath));
 } catch {
     storedConfig = {
-        interval: minToMs(DEFAULT_INTERVAL)
+        interval: DEFAULT_INTERVAL
     };
 }
-let interval = minToMs(DEFAULT_INTERVAL);
-if(storedConfig.interval) {
-    if(storedConfig.interval > MAX_INTERVAL) {
-        interval = minToMs(DEFAULT_INTERVAL);
-    } else {
-        interval = minToMs(storedConfig.interval);
-    }
-}
-console.log("Current interval: " + interval + " ms");
-let timer = setInterval(onBreakTime, interval);
+let timer = new Timer(storedConfig.interval);
 
 // Prevents the default behavior of quitting the application when all windows are closed.
 app.on("window-all-closed", (e) => {
@@ -199,17 +152,8 @@ app.on("window-all-closed", (e) => {
 // Handles new interval settings.
 ipcMain.on("interval-message", (event, arg) => {
     const newIntervalMin = parseInt(arg); // Converts the first argument into an integer.
-    let newIntervalMs = minToMs(DEFAULT_INTERVAL);
-    if(newIntervalMin > MAX_INTERVAL) {
-        newIntervalMs = minToMs(DEFAULT_INTERVAL);
-    } else {
-        newIntervalMs = minToMs(newIntervalMin);
-    }
 
-    // Reset current timer to use new interval.
-    clearInterval(timer);
-    timer = setInterval(onBreakTime, newIntervalMs);
-    console.log("New interval: " + newIntervalMs);
+    timer.setTime(newIntervalMin);
 
     // Gets OS-specific application path.
     const userDataPath = app.getPath("userData");

@@ -1,15 +1,15 @@
 {
-  "name": "waktu",
-  "version": "1.0.0",
-  "description": "A friendly non-intrusive reminder to take take a break from your screen!",
-  "main": "main.js",
-  "scripts": {
-    "start": "electron .",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "",
-  "license": "ISC",
-  "devDependencies": {
-    "electron": "^9.1.1"
-  }
+    "name": "waktu",
+    "version": "1.0.0",
+    "description": "A friendly non-intrusive reminder to take take a break from your screen!",
+    "main": "main.js",
+    "scripts": {
+        "start": "electron .",
+        "test": "echo \"Error: no test specified\" && exit 1"
+    },
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+        "electron": "^9.1.1"
+    }
 }
