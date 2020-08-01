@@ -29,7 +29,7 @@ class Timer {
     constructor(interval) {
         interval = this.sanitizeInterval(interval);
         this.#currentInterval = interval;
-        this.#timer = setInterval(this.notify, this.minToMs(interval));
+        this.#timer = setInterval(this.notify.bind(this), 10000/*this.minToMs(interval)*/);
         this.#startTime = new Date();
         console.log("New timer started! Interval: " + this.#currentInterval + " min.");
     }
@@ -72,6 +72,7 @@ class Timer {
         console.log("Breaktime!");
 
         if(!this.#enabled) {
+            console.log("Skipping notification.");
             return;
         }
 
@@ -105,7 +106,7 @@ class Timer {
         this.#currentInterval = newInterval;
 
         clearInterval(this.#timer);
-        this.#timer = setInterval(this.notify, this.minToMs(newInterval));
+        this.#timer = setInterval(this.notify.bind(this), this.minToMs(newInterval));
 
         this.#startTime = new Date(); // Reset start time.
         console.log("Set new interval: " + this.#currentInterval + " min.");
@@ -130,4 +131,4 @@ class Timer {
 
 }
 
-module.exports = {Timer};
+module.exports = { Timer };
