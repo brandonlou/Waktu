@@ -1,16 +1,29 @@
 const { Notification } = require("electron");
 
+/** Class representing a repeating timer. */
 class Timer {
 
-    #DEFAULT_INTERVAL = 60; // 1 hour.
-    #MAX_INTERVAL = 35791; // One more minute will result in integer overflow when converting to ms.
+    /** Default interval in minutes. */
+    #DEFAULT_INTERVAL = 60;
+
+    /** Maximum interval in minutes. Calculated based on preventing integer overflow when converting
+     * to milliseconds. */
+    #MAX_INTERVAL = 35791;
+
+    /** ID value of the timer set using setInterval(). */
     #timer = null;
+
+    /** Time when timer starts. */
     #startTime = new Date();
+
+    /** Current time in between breaktimes. */
     #currentInterval = null;
+
+    /** Whether user will be notified or not. */
     #enabled = true;
 
     /**
-     * Constructor for Timer class.
+     * Creates a Timer.
      * @param {Number} interval Initial interval in between breaktimes.
      */
     constructor(interval) {
@@ -51,6 +64,10 @@ class Timer {
         console.log("Enabled: " + this.#enabled);
     }
 
+    /**
+     * Notifies the user when it's their breaktime.
+     * @returns {void} Nothing
+     */
     notify() {
         console.log("Breaktime!");
 
@@ -96,12 +113,19 @@ class Timer {
 
     /**
      * Returns the time until next breaktime.
-     * @returns {void} Nothing
+     * @returns {String} String representing number of minutes.
      */
     getTimeRemaining() {
         const currentTime = new Date();
-        const timeDifference = currentTime - this.#startTime;
-        console.log(timeDifference);
+        const timeDiffMs = currentTime - this.#startTime;
+        const timeDiffMin = timeDiffMs / 60000;
+        const roundedTimeDiff = Math.round(timeDiffMin);
+        const timeToBreak = this.#currentInterval - roundedTimeDiff;
+        if(timeToBreak === 0) {
+            return "< 1 min."
+        } else {
+            return timeToBreak + " min.";
+        }
     }
 
 }

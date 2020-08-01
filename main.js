@@ -1,10 +1,11 @@
-const { app, ipcMain, dialog, shell, Menu, Tray, Notification, BrowserWindow } = require("electron");
-const path = require("path");
+const { app, ipcMain, dialog, shell, Menu, Tray, BrowserWindow } = require("electron");
 const fs = require("fs");
+const path = require("path");
 const Timer = require("./Timer.js").Timer;
+
 const DEFAULT_INTERVAL = 60; // 1 hour.
 
-let preferencesWindow, aboutWindow = null;
+let preferencesWindow = null;
 
 const openPreferencesPage = () => {
     // Prevent more than one instance of a preference window.
@@ -15,7 +16,7 @@ const openPreferencesPage = () => {
         height: 400,
         width: 300,
         webPreferences: {
-            nodeIntegration: true, // This allows ipcRenderer to work.
+            nodeIntegration: true, // Allows ipcRenderer to work.
             enableRemoteModule: true, // Hides deprecation warning.
             devTools: false
         }
@@ -69,15 +70,11 @@ const handleClickEnable = () => {
     timer.toggleEnable();
 }
 
-// Keep tray global to prevent it from dissapearing.
-let tray = null;
-
-const createSystemTray = () => {
-    tray = new Tray("./icon.png");
+const getContextMenu = () => {
     const contextMenu = Menu.buildFromTemplate([
         {
             type: "normal",
-            label: "Next break in: xxx",
+            label: "Next break in: " + timer.getTimeRemaining(),
             toolTip: "Functionality will be added in a future version.",
             enabled: false
         },
@@ -124,8 +121,19 @@ const createSystemTray = () => {
             }
         }
     ]);
+    return contextMenu;
+}
+
+// Keep tray global to prevent it from dissapearing.
+let tray = null;
+
+const createSystemTray = () => {
+    tray = new Tray("./icon.png");
     tray.setToolTip("Remember to take a break!"); // Hover text for tray icon.
-    tray.setContextMenu(contextMenu);
+    tray.setContextMenu(getContextMenu());
+    tray.on("click", (event, bounds, position) => {
+        tray.setContextMenu(getContextMenu());
+    });
 }
 
 app.whenReady().then(createSystemTray);
