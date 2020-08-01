@@ -1,9 +1,12 @@
-const { app, ipcMain, dialog, shell, Menu, Tray, BrowserWindow } = require("electron");
+const { app, ipcMain, dialog, shell, nativeImage, Menu, Tray, BrowserWindow } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const Timer = require("./Timer.js").Timer;
 
 const DEFAULT_INTERVAL = 60; // 1 hour.
+const ICON = nativeImage.createFromPath(path.join(__dirname, 'icon.png'));
+
+let checked = true;
 
 let preferencesWindow = null;
 
@@ -38,7 +41,7 @@ const openAboutPage = () => {
         defaultId: 0, // "Close" is highlighted by default.
         message: "Waktu v. " + app.getVersion(), // Gets version from package.json
         detail: "Extra detail",
-        icon: "./icon.png",
+        icon: ICON,
         cancelId: 0
     };
 
@@ -68,6 +71,7 @@ const openDonateLink = () => {
 
 const handleClickEnable = () => {
     timer.toggleEnable();
+    checked = !checked;
 }
 
 const getContextMenu = () => {
@@ -82,7 +86,7 @@ const getContextMenu = () => {
             type: "checkbox",
             label: "Enable (click to toggle)",
             toolTip: "Check/uncheck to enable or disable break reminders.",
-            checked: true,
+            checked: checked,
             click: handleClickEnable
         },
         {
@@ -128,7 +132,7 @@ const getContextMenu = () => {
 let tray = null;
 
 const createSystemTray = () => {
-    tray = new Tray("./icon.png");
+    tray = new Tray(ICON);
     tray.setToolTip("Remember to take a break!"); // Hover text for tray icon.
     tray.setContextMenu(getContextMenu());
     tray.on("click", (event, bounds, position) => {
