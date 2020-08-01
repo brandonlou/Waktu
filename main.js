@@ -39,7 +39,7 @@ const openAboutPage = () => {
         buttons: ["Close", "Source", "Donate"],
         title: "Waktu",
         defaultId: 0, // "Close" is highlighted by default.
-        message: "Waktu v. " + app.getVersion(), // Gets version from package.json
+        message: "Waktu v" + app.getVersion(), // Gets version from package.json
         detail: "Extra detail",
         icon: ICON,
         cancelId: 0

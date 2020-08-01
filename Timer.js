@@ -29,7 +29,7 @@ class Timer {
     constructor(interval) {
         interval = this.sanitizeInterval(interval);
         this.#currentInterval = interval;
-        this.#timer = setInterval(this.notify.bind(this), 10000/*this.minToMs(interval)*/);
+        this.#timer = setInterval(this.notify.bind(this), this.minToMs(interval));
         this.#startTime = new Date();
         console.log("New timer started! Interval: " + this.#currentInterval + " min.");
     }
@@ -69,6 +69,8 @@ class Timer {
      * @returns {void} Nothing
      */
     notify() {
+
+        this.#startTime = new Date();
         console.log("Breaktime!");
 
         if(!this.#enabled) {
@@ -83,9 +85,9 @@ class Timer {
     
         // Create and show a notification to take a break.
         const notification = new Notification({
-            title: "Please take a break!",
-            subtitle: "right now",
-            body: "this is the body",
+            title: "It's your breaktime!",
+            subtitle: "Relax your eyes",
+            body: "You've been staring too long at the screen",
             silent: false,
             hasReply: false,
             timeoutType: "never", // Notification will persist (doesn't work on Electron 8+)
@@ -106,6 +108,8 @@ class Timer {
         this.#currentInterval = newInterval;
 
         clearInterval(this.#timer);
+        // We have to bind 'this' or else the context of 'this' is the window in setInterval and not
+        // the class itself.
         this.#timer = setInterval(this.notify.bind(this), this.minToMs(newInterval));
 
         this.#startTime = new Date(); // Reset start time.
