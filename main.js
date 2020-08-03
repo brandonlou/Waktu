@@ -1,7 +1,8 @@
-const { app, ipcMain, dialog, shell, nativeImage, Menu, Tray, BrowserWindow } = require("electron");
+const { app, ipcMain, dialog, shell, nativeImage, Menu, Tray, BrowserWindow, Notification } = require("electron");
 const fs = require("fs");
 const path = require("path");
 const Timer = require("./Timer.js").Timer;
+const exec = require("child_process").exec;
 
 const DEFAULT_INTERVAL = 60; // 1 hour.
 const ICON = nativeImage.createFromPath(path.join(__dirname, 'icon.png'));
@@ -74,6 +75,42 @@ const handleClickEnable = () => {
     checked = !checked;
 }
 
+const handleTestNotification = () => {
+    const notification = new Notification({
+        title: "Hey there!",
+        subtitle: "This is a test notification from Waktu.",
+        body: "Have a great day :)",
+        silent: false,
+        hasReply: false,
+        timeoutType: "never", // Notification will persist (doesn't work on Electron 8+)
+        urgency: "critical",
+        closeButtonText: "Close"
+    });
+    notification.show();
+    const dialogOptions = {
+        type: "info",
+        buttons: ["Close", "Open Notification Permissions"],
+        title: "Waktu",
+        defaultId: 0, // "Close" is highlighted by default.
+        message: "How to enable notifications",
+        detail: "If you didn't see a notification, click the Open Notification Permissions button below. Once System Preferences has opened, select Waktu from the menu on the left. Toggle \"Allow Notifications from Waktu\" and click \"Alerts\" as the alert style.",
+        icon: ICON,
+        cancelId: 0
+    };
+    dialog.showMessageBox(dialogOptions).then((data) => {
+        if(data.response == 1) { // Second button.
+            exec("open 'x-apple.systempreferences:com.apple.preference.notifications'", (error, stdout, stderr) => {
+                if(error) {
+                    console.error(error);
+                }
+                if(stderr) {
+                    console.error(stderr);
+                }
+            });
+        }
+    });
+}
+
 const getContextMenu = () => {
     const contextMenu = Menu.buildFromTemplate([
         {
@@ -88,6 +125,12 @@ const getContextMenu = () => {
             toolTip: "Check/uncheck to enable or disable break reminders.",
             checked: checked,
             click: handleClickEnable
+        },
+        {
+            type: "normal",
+            label: "Test Notifications",
+            tooltip: "Click to test if notifications will show.",
+            click: handleTestNotification
         },
         {
             type: "separator"

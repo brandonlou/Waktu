@@ -12,12 +12,14 @@
 3. Run `npm install` to install dependencies.
 4. Run `npm start` to start the Electron app.
 
+## Packaging
+* `npm run build-mac`
+
 ## Features
 * Choose how often you want to set a break
 * Non-intrusive reminders
 
 ### To-do list:
-* Make Waktu run in the background
+* Start automatically on computer startup
 * User interface improvements
-* Package for MacOS
-* Test on Windows/Linux
+* Test on Windows/Linux (low priority)
