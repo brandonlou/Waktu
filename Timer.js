@@ -126,7 +126,9 @@ class Timer {
         const timeDiffMin = timeDiffMs / 60000;
         const roundedTimeDiff = Math.round(timeDiffMin);
         const timeToBreak = this.#currentInterval - roundedTimeDiff;
-        if(timeToBreak === 0) {
+        if(timeToBreak < 0) {
+            return "—"; // Em dash
+        } else if(timeToBreak === 0) {
             return "< 1 min."
         } else {
             return timeToBreak + " min.";

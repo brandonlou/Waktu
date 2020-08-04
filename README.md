@@ -23,3 +23,4 @@
 * Start automatically on computer startup
 * User interface improvements
 * Test on Windows/Linux (low priority)
+* Smaller app binary (low priority)

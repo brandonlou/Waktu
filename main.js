@@ -11,27 +11,39 @@ let checked = true;
 
 let preferencesWindow = null;
 
+/**
+ * Opens the preferences window.
+ * @returns {void} Nothing.
+ */
 const openPreferencesPage = () => {
+
     // Prevent more than one instance of a preference window.
     if(preferencesWindow) {
         return;
     }
+
     preferencesWindow = new BrowserWindow({
         height: 400,
         width: 300,
         webPreferences: {
             nodeIntegration: true, // Allows ipcRenderer to work.
             enableRemoteModule: true, // Hides deprecation warning.
-            devTools: false
+            devTools: false // Disables user from accessing chrome dev tools (feels more native)
         }
     });
+
     preferencesWindow.loadFile("./preferences.html");
     preferencesWindow.setResizable(false);
     preferencesWindow.on("closed", () => {
         preferencesWindow = null;
     });
+
 }
 
+/**
+ * Opens the about dialog.
+ * @returns {void} Nothing.
+ */
 const openAboutPage = () => {
 
     // About dialog options.
@@ -65,7 +77,10 @@ const openAboutPage = () => {
 
 }
 
-// Opens a donation page (which I do not have yet)
+/**
+ * Show your support by opening an external link to a donation page!
+ * @returns {void} Virtual hugs and appreciations.
+ */
 const openDonateLink = () => {
     return;
 }
@@ -75,7 +90,12 @@ const handleClickEnable = () => {
     checked = !checked;
 }
 
+/**
+ * Emits a notification and opens an info dialog with instructions on how to enable notifications.
+ * @returns {void} Nothing.
+ */
 const handleTestNotification = () => {
+
     const notification = new Notification({
         title: "Hey there!",
         subtitle: "This is a test notification from Waktu.",
@@ -87,6 +107,7 @@ const handleTestNotification = () => {
         closeButtonText: "Close"
     });
     notification.show();
+
     const dialogOptions = {
         type: "info",
         buttons: ["Close", "Open Notification Permissions"],
@@ -97,8 +118,10 @@ const handleTestNotification = () => {
         icon: ICON,
         cancelId: 0
     };
+
     dialog.showMessageBox(dialogOptions).then((data) => {
-        if(data.response == 1) { // Second button.
+        if(data.response == 1) { // Second button clicked.
+            // Open the Notifications pane on System Preferences.
             exec("open 'x-apple.systempreferences:com.apple.preference.notifications'", (error, stdout, stderr) => {
                 if(error) {
                     console.error(error);
@@ -111,6 +134,10 @@ const handleTestNotification = () => {
     });
 }
 
+/**
+ * Creates an Electron menu for the system tray.
+ * @returns {Electron.Menu} The Electron menu.
+ */
 const getContextMenu = () => {
     const contextMenu = Menu.buildFromTemplate([
         {
@@ -171,9 +198,16 @@ const getContextMenu = () => {
     return contextMenu;
 }
 
-// Keep tray global to prevent it from dissapearing.
+/** 
+ * Represents the system tray. Keep as a global variable to prevent it from dissapearing when
+ * Javascript's garbage collector removes it :(
+*/
 let tray = null;
 
+/**
+ * Creates a system tray using the tray global variable and sets options.
+ * @returns {void} Nothing.
+ */
 const createSystemTray = () => {
     tray = new Tray(ICON);
     tray.setToolTip("Remember to take a break!"); // Hover text for tray icon.
@@ -226,6 +260,6 @@ ipcMain.on("interval-message", (event, arg) => {
     });
 });
 
-// Hide application the from Mac dock so it's only accessible via the system tray.
+// Hide application the from Mac dock so it is only accessible via the system tray.
 // Minor issue: There is a slight blip before the application icon dissapears.
 app.dock.hide();
