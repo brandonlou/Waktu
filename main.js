@@ -33,7 +33,7 @@ const openPreferencesPage = () => {
         }
     });
 
-    preferencesWindow.loadFile("./preferences.html");
+    preferencesWindow.loadFile("./render/preferences.html");
     preferencesWindow.setResizable(false);
     preferencesWindow.on("closed", () => {
         preferencesWindow = null;
