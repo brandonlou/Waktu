@@ -5,7 +5,8 @@ const Timer = require("./Timer.js").Timer;
 const exec = require("child_process").exec;
 
 const DEFAULT_INTERVAL = 60; // 1 hour.
-const ICON = nativeImage.createFromPath(path.join(__dirname, 'icon.png'));
+const ICON_IMAGE = nativeImage.createFromPath(path.join(__dirname, '/assets/icons/icon.png'));
+const LOGO_IMAGE = nativeImage.createFromPath(path.join(__dirname, '/assets/icons/logo.png'));
 
 let checked = true;
 
@@ -54,7 +55,7 @@ const openAboutPage = () => {
         defaultId: 0, // "Close" is highlighted by default.
         message: "Waktu v" + app.getVersion(), // Gets version from package.json
         detail: "Extra detail",
-        icon: ICON,
+        icon: LOGO_IMAGE,
         cancelId: 0
     };
 
@@ -115,8 +116,8 @@ const handleTestNotification = () => {
         defaultId: 0, // "Close" is highlighted by default.
         message: "How to enable notifications",
         detail: "If you didn't see a notification, click the Open Notification Permissions button below. Once System Preferences has opened, select Waktu from the menu on the left. Toggle \"Allow Notifications from Waktu\" and click \"Alerts\" as the alert style.",
-        icon: ICON,
-        cancelId: 0
+        cancelId: 0,
+        icon: LOGO_IMAGE
     };
 
     dialog.showMessageBox(dialogOptions).then((data) => {
@@ -209,7 +210,7 @@ let tray = null;
  * @returns {void} Nothing.
  */
 const createSystemTray = () => {
-    tray = new Tray(ICON);
+    tray = new Tray(ICON_IMAGE);
     tray.setToolTip("Remember to take a break!"); // Hover text for tray icon.
     tray.setContextMenu(getContextMenu());
     tray.on("click", (event, bounds, position) => {
