@@ -79,7 +79,7 @@ class Timer {
         }
 
         if(!Notification.isSupported()) {
-            console.log("Notifications are not supported");
+            console.log("Notifications are not supported.");
             return;
         }
     
@@ -127,7 +127,7 @@ class Timer {
         const roundedTimeDiff = Math.round(timeDiffMin);
         const timeToBreak = this.#currentInterval - roundedTimeDiff;
         if(timeToBreak < 0) {
-            return "—"; // Em dash
+            return "—"; // Em dash.
         } else if(timeToBreak === 0) {
             return "< 1 min."
         } else {

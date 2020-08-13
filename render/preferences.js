@@ -1,6 +1,6 @@
 const electron = require('electron');
-const path = require('path');
 const fs = require('fs');
+const path = require('path');
 
 /** Represents the default selected time in between breaks. */
 const DEFAULT_INTERVAL = 60; // 1 hour.

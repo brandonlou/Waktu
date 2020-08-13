@@ -261,6 +261,6 @@ ipcMain.on("interval-message", (event, arg) => {
     });
 });
 
-// Hide application the from Mac dock so it is only accessible via the system tray.
+// Hide application from the Mac dock so it is only accessible via the system tray.
 // Minor issue: There is a slight blip before the application icon dissapears.
 app.dock.hide();
