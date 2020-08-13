@@ -1,4 +1,5 @@
 const { Notification } = require("electron");
+const { getMessage } = require("./HelpfulMessage.js");
 
 /** Class representing a repeating timer. */
 class Timer {
@@ -86,8 +87,8 @@ class Timer {
         // Create and show a notification to take a break.
         const notification = new Notification({
             title: "It's your breaktime!",
-            subtitle: "Relax your eyes",
-            body: "You've been staring too long at the screen",
+            // subtitle: "Tip:",
+            body: getMessage(),
             silent: false,
             hasReply: false,
             timeoutType: "never", // Notification will persist (doesn't work on Electron 8+)
