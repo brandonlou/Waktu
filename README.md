@@ -1,28 +1,27 @@
-# Waktu
-
-> Waktu is a simple cross-platform application reminding you to take breaks from your screen!
-
-## Table of Contents
-* [General](#general)
-* [Screenshots](#screenshots)
-* [Setup](#setup)
-* [Usage](#usage)
-* [Features](#features)
-* [Inspiration](#inspiration)
-* [Credits](#credits)
-* [License](#license)
+<h1 align="center">Waktu</h1>
+<p align="center">
+    <a href="#general">General</a>
+    <a href="#screenshots">Screenshots</a>
+    <a href="#setup">Setup</a>
+    <a href="#usage">Usage</a>
+    <a href="#features">Features</a>
+    <a href="#inspiration">Inspiration</a>
+    <a href="#credits">Credits</a>
+    <a href="#license">License</a>
+</p>
 
 ## General
+Waktu is a simple cross-platform application that reminds you to take breaks from your screen! Underneath it runs on Electron.js and interfaces with the native OS's system tray.
 
 ## Screenshots
 
 ## Setup
-1. Prerequisites: `node`.
+1. Requirements: `node`.
 2. Clone this repo and navigate to project root.
 3. Run `npm install` to install dependencies.
 4. Run `npm start` to start the Electron app.
 
-### Packaging
+### Packaging for macOS
 1. From the project root, run `npm run build-mac`.
 2. Open the application bundle located in `Waktu-darwin-x64/Waktu.app`.
 
@@ -44,8 +43,9 @@
 * Smaller app binary (low priority).
 
 ## Inspiration
-Waktu was inspired by a bad tendency to spend long periods of time sitting in front the computer. I wanted to take more breaks in order to combat my stiff neck muscles and fatigued eyes. Other screentime reminder apps were either too flashy or cost a fee, so Waktu arose as a minimalistic open-source application for this problem.
+Waktu was inspired by an unhealthy tendency to spend long periods of time sitting in front the computer. I wanted to take more breaks in order to combat my stiff neck muscles and fatigued eyes. Other screentime reminder apps were either too flashy or cost a fee, so Waktu arose as a minimalistic open-source solution to this problem.
 
 ## Credits
 
 ## License
+[GPL-3.0 License](LICENSE)
