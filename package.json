@@ -1,7 +1,7 @@
 {
     "name": "waktu",
-    "version": "0.1.0",
-    "description": "A friendly non-intrusive reminder to take take a break from your screen!",
+    "version": "1.0.0",
+    "description": "A friendly non-intrusive reminder app to take take a break from your screen!",
     "repository": {
         "type": "git",
         "url": "https://github.com/brandonlou/Waktu"
@@ -13,7 +13,7 @@
         "build-mac": "electron-packager . Waktu --platform=darwin --arch=x64 --asar --overwrite"
     },
     "author": "Brandon Lou",
-    "license": "ISC",
+    "license": "GPL-3.0",
     "devDependencies": {
         "electron": "^9.1.1",
         "electron-packager": "^15.0.0"
