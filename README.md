@@ -1,4 +1,3 @@
-<p align="center"><img src="/assets/icons/logo.svg" alt="Waktu" width="25%"/></p>
 <h1 align="center">Waktu</h1>
 <p align="center" style="text-align:justify">
     <a href="#general">General</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -10,6 +9,7 @@
     <a href="#credits">Credits</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="#license">License</a>
 </p>
+<p align="center"><img src="/assets/icons/logo.svg" alt="Waktu" width="25%"/></p>
 
 ## General
 Waktu is a simple cross-platform application that reminds you to take breaks from your screen! Underneath it runs on Electron.js and interfaces with the native OS's system tray.
