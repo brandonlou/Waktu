@@ -1,13 +1,13 @@
-<h1 align="center" style="border-bottom:none">Waktu</h1>
-<p align="center"><img src="assets/icons/logo.svg" width="25%"/></p>
-<p align="center">
-    <a href="#general">General</a>
-    <a href="#screenshots">Screenshots</a>
-    <a href="#setup">Setup</a>
-    <a href="#usage">Usage</a>
-    <a href="#features">Features</a>
-    <a href="#inspiration">Inspiration</a>
-    <a href="#credits">Credits</a>
+<p align="center"><img src="/assets/icons/logo.svg" alt="Waktu" width="25%"/></p>
+<h1 align="center">Waktu</h1>
+<p align="center" style="text-align:justify">
+    <a href="#general">General</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#screenshots">Screenshots</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#setup">Setup</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#usage">Usage</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#features">Features</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#inspiration">Inspiration</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#credits">Credits</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="#license">License</a>
 </p>
 
