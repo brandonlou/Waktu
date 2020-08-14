@@ -1,4 +1,5 @@
-<h1 align="center">Waktu</h1>
+<h1 align="center" style="border-bottom:none">Waktu</h1>
+<p align="center"><img src="assets/icons/logo.svg" width="25%"/></p>
 <p align="center">
     <a href="#general">General</a>
     <a href="#screenshots">Screenshots</a>
