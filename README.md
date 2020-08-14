@@ -1,5 +1,5 @@
-<p align="center"><img src="/assets/icons/logo.svg" alt="Waktu" width="25%"/></p>
 <h1 align="center">Waktu</h1>
+<p align="center"><img src="/assets/icons/logo.svg" alt="Waktu" width="25%"/></p>
 <p align="center" style="text-align:justify">
     <a href="#general">General</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="#screenshots">Screenshots</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -23,7 +23,7 @@ Waktu is a simple cross-platform application that reminds you to take breaks fro
 4. Run `npm start` to start the Electron app.
 
 ### Packaging for macOS
-1. From the project root, run `npm run build-mac`.
+1. From the project root, run `npm run package-mac`.
 2. Open the application bundle located in `Waktu-darwin-x64/Waktu.app`.
 
 ## Usage
