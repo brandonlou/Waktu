@@ -53,8 +53,8 @@ const openAboutPage = () => {
         buttons: ["Close", "Source", "Donate"],
         title: "Waktu",
         defaultId: 0, // "Close" is highlighted by default.
-        message: "Waktu v" + app.getVersion(), // Gets version from package.json
-        detail: "Extra detail",
+        message: "Waktu " + app.getVersion(), // Gets version from package.json
+        detail: "Developed by Brandon Lou.\nGPL-3.0 License",
         icon: LOGO_IMAGE,
         cancelId: 0
     };
@@ -211,7 +211,7 @@ let tray = null;
  */
 const createSystemTray = () => {
     tray = new Tray(ICON_IMAGE);
-    tray.setToolTip("Remember to take a break!"); // Hover text for tray icon.
+    tray.setToolTip("Waktu"); // Hover text for tray icon.
     tray.setContextMenu(getContextMenu());
     tray.on("click", (event, bounds, position) => {
         tray.setContextMenu(getContextMenu());
